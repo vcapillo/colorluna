@@ -232,7 +232,7 @@
 
         .clear-btn {
             position: absolute;
-            bottom: 180px;
+            bottom: 20px;
             right: 20px;
             padding: 15px 25px;
             font-family: 'Fredoka', sans-serif;
@@ -243,8 +243,33 @@
             border-radius: 25px;
             cursor: pointer;
             z-index: 50;
-            display: none;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        .music-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            padding: 15px 25px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 18px;
+            color: white;
+            background: linear-gradient(135deg, #6B5B95 0%, #D4A5FF 100%);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            z-index: 50;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .music-btn.playing {
+            background: linear-gradient(135deg, #FF6B9D 0%, #C44D9A 100%);
+            animation: pulse-music 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-music {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .clear-btn.show {
@@ -260,14 +285,7 @@
             z-index: 30;
             touch-action: none;
             cursor: crosshair;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .paint-canvas.active {
             pointer-events: auto;
-            opacity: 1;
         }
 
         #unicornCanvas {
@@ -296,8 +314,8 @@
             <button class="color-btn violet" data-color="#D4A5FF" data-note="B"></button>
         </div>
         <button class="restart-btn" id="restartBtn">¡Otra vez! 🎉</button>
-        <button class="mode-btn" id="modeBtn">🎨 Pintar</button>
         <button class="clear-btn" id="clearBtn">🗑️ Limpiar</button>
+        <button class="music-btn" id="musicBtn">🎵 Música</button>
         <div class="paint-palette" id="paintPalette">
             <div class="color-swatch active" data-color="#FF6B6B" style="background:#FF6B6B"></div>
             <div class="color-swatch" data-color="#FFB347" style="background:#FFB347"></div>
@@ -325,7 +343,7 @@
         let sparkles = [];
         let particles = [];
         let audioCtx = null;
-        let paintMode = false;
+        let musicStarted = false;
         let paintColor = '#FF6B6B';
         let isDrawing = false;
         let lastX = 0;
@@ -333,12 +351,12 @@
 
         const paintCanvas = document.getElementById('paintCanvas');
         const paintCtx = paintCanvas.getContext('2d');
-        const modeBtn = document.getElementById('modeBtn');
-        const paintPalette = document.getElementById('paintPalette');
         const clearBtn = document.getElementById('clearBtn');
 
         const colors = ['#FF6B6B', '#FFB347', '#FFE66D', '#4ECDC4', '#4A90D9', '#6B5B95', '#D4A5FF'];
         const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88];
+
+        const paintColors = ['#FF6B6B', '#FFB347', '#FFE66D', '#4ECDC4', '#4A90D9', '#FF69B4', '#D4A5FF', '#FFFFFF'];
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -394,6 +412,72 @@
             gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
             osc2.start(audioCtx.currentTime);
             osc2.stop(audioCtx.currentTime + 0.3);
+        }
+
+        let musicInterval = null;
+        
+        function startMusic() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            const melody = [392, 440, 494, 523, 587, 659, 784, 659, 587, 523, 494, 440, 392, 440, 494, 523];
+            let noteIndex = 0;
+            
+            musicInterval = setInterval(() => {
+                const freq = melody[noteIndex];
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+                
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.8);
+                
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(freq * 1.5, audioCtx.currentTime);
+                gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc2.start(audioCtx.currentTime);
+                osc2.stop(audioCtx.currentTime + 0.5);
+                
+                noteIndex = (noteIndex + 1) % melody.length;
+            }, 500);
+        }
+
+        function stopMusic() {
+            if (musicInterval) {
+                clearInterval(musicInterval);
+                musicInterval = null;
+            }
+        }
+
+        function toggleMusic() {
+            const musicBtn = document.getElementById('musicBtn');
+            if (musicInterval) {
+                stopMusic();
+                musicBtn.textContent = '🎵 Música';
+                musicBtn.classList.remove('playing');
+            } else {
+                initAudio();
+                startMusic();
+                musicBtn.textContent = '⏸️ Música';
+                musicBtn.classList.add('playing');
+            }
         }
 
         function drawUnicorn(x, y, color, glow) {
@@ -684,103 +768,100 @@
             paintCtx.fill();
         }
 
-        function draw(e) {
-            if (!isDrawing || !paintMode) return;
+        function clearPaint() {
+            paintCtx.clearRect(0, 0, paintCanvas.width, paintCanvas.height);
+            unicornColor = '#FFFFFF';
+            glowColor = '#FFD700';
+            sparkles = [];
+            restartBtn.style.display = 'none';
+        }
+
+        function handleTouchStart(e) {
             e.preventDefault();
-            e.stopPropagation();
-            const pos = getPos(e);
-            
+            const touch = e.touches[0];
+            const rect = paintCanvas.getBoundingClientRect();
+            lastX = touch.clientX - rect.left;
+            lastY = touch.clientY - rect.top;
+            isDrawing = true;
+            paintCtx.beginPath();
+            paintCtx.arc(lastX, lastY, 12, 0, Math.PI * 2);
+            paintCtx.fillStyle = paintColor;
+            paintCtx.fill();
+        }
+
+        function handleTouchMove(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = paintCanvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
             paintCtx.beginPath();
             paintCtx.moveTo(lastX, lastY);
-            paintCtx.lineTo(pos.x, pos.y);
+            paintCtx.lineTo(x, y);
             paintCtx.strokeStyle = paintColor;
             paintCtx.lineWidth = 25;
             paintCtx.lineCap = 'round';
             paintCtx.lineJoin = 'round';
             paintCtx.stroke();
-            
-            lastX = pos.x;
-            lastY = pos.y;
+            lastX = x;
+            lastY = y;
         }
 
-        function stopDrawing() {
+        function handleTouchEnd() {
             isDrawing = false;
         }
 
-        function togglePaintMode() {
-            paintMode = !paintMode;
-            if (paintMode) {
-                modeBtn.textContent = '🦄 Jugar';
-                modeBtn.style.background = 'linear-gradient(135deg, #FF6B9D 0%, #C44D9A 100%)';
-                paintPalette.classList.add('show');
-                clearBtn.classList.add('show');
-                rainbowButtons.style.display = 'none';
-                restartBtn.style.display = 'none';
-                document.getElementById('unicornCanvas').style.opacity = '0.3';
-                paintCanvas.classList.add('active');
-            } else {
-                modeBtn.textContent = '🎨 Pintar';
-                modeBtn.style.background = 'linear-gradient(135deg, #6B5B95 0%, #D4A5FF 100%)';
-                paintPalette.classList.remove('show');
-                clearBtn.classList.remove('show');
-                rainbowButtons.style.display = 'flex';
-                document.getElementById('unicornCanvas').style.opacity = '1';
-                paintCanvas.classList.remove('active');
-            }
-        }
-
-        function selectPaintColor(e) {
-            const swatch = e.target.closest('.color-swatch') || e.target;
-            if (swatch.classList.contains('color-swatch')) {
+        function handleColorTouch(e) {
+            const target = e.target;
+            if (target.classList.contains('color-swatch')) {
                 document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-                swatch.classList.add('active');
-                paintColor = swatch.dataset.color;
+                target.classList.add('active');
+                paintColor = target.dataset.color;
             }
         }
 
-        function clearPaint() {
-            paintCtx.clearRect(0, 0, paintCanvas.width, paintCanvas.height);
-        }
-
-        function togglePaintMode() {
-            paintMode = !paintMode;
-            if (paintMode) {
-                modeBtn.textContent = '🦄 Jugar';
-                modeBtn.style.background = 'linear-gradient(135deg, #FF6B9D 0%, #C44D9A 100%)';
-                paintPalette.classList.add('show');
-                clearBtn.style.display = 'block';
-                rainbowButtons.style.display = 'none';
-                restartBtn.style.display = 'none';
-                document.getElementById('unicornCanvas').style.opacity = '0.3';
-                paintCanvas.classList.add('active');
-            } else {
-                modeBtn.textContent = '🎨 Pintar';
-                modeBtn.style.background = 'linear-gradient(135deg, #6B5B95 0%, #D4A5FF 100%)';
-                paintPalette.classList.remove('show');
-                clearBtn.style.display = 'none';
-                rainbowButtons.style.display = 'flex';
-                document.getElementById('unicornCanvas').style.opacity = '1';
-                paintCanvas.classList.remove('active');
-            }
-        }
-        }
-
-        function clearPaint() {
-            paintCtx.clearRect(0, 0, paintCanvas.width, paintCanvas.height);
-        }
-
-        paintCanvas.addEventListener('pointerdown', startDrawing);
-        paintCanvas.addEventListener('pointermove', draw);
-        paintCanvas.addEventListener('pointerup', stopDrawing);
-        paintCanvas.addEventListener('pointercancel', stopDrawing);
-        paintCanvas.addEventListener('pointerleave', stopDrawing);
+        paintCanvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+        paintCanvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+        paintCanvas.addEventListener('touchend', handleTouchEnd);
         
-        modeBtn.addEventListener('click', togglePaintMode);
-        modeBtn.addEventListener('touchstart', togglePaintMode, { passive: true });
-        paintPalette.addEventListener('click', selectPaintColor);
-        paintPalette.addEventListener('touchstart', selectPaintColor, { passive: true });
+        paintCanvas.addEventListener('mousedown', function(e) {
+            const rect = paintCanvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+            isDrawing = true;
+            paintCtx.beginPath();
+            paintCtx.arc(lastX, lastY, 12, 0, Math.PI * 2);
+            paintCtx.fillStyle = paintColor;
+            paintCtx.fill();
+        });
+
+        paintCanvas.addEventListener('mousemove', function(e) {
+            if (!isDrawing) return;
+            const rect = paintCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            paintCtx.beginPath();
+            paintCtx.moveTo(lastX, lastY);
+            paintCtx.lineTo(x, y);
+            paintCtx.strokeStyle = paintColor;
+            paintCtx.lineWidth = 25;
+            paintCtx.lineCap = 'round';
+            paintCtx.lineJoin = 'round';
+            paintCtx.stroke();
+            lastX = x;
+            lastY = y;
+        });
+
+        paintCanvas.addEventListener('mouseup', function() { isDrawing = false; });
+        paintCanvas.addEventListener('mouseleave', function() { isDrawing = false; });
+
+        paintPalette.addEventListener('touchstart', handleColorTouch, { passive: true });
+        paintPalette.addEventListener('click', handleColorTouch);
         clearBtn.addEventListener('click', clearPaint);
         clearBtn.addEventListener('touchstart', clearPaint, { passive: true });
+        document.getElementById('musicBtn').addEventListener('click', toggleMusic);
+        document.getElementById('musicBtn').addEventListener('touchstart', toggleMusic, { passive: true });
 
         window.addEventListener('resize', () => {
             resizeCanvas();
