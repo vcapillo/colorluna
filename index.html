@@ -252,8 +252,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2;
+            z-index: 30;
             touch-action: none;
+            cursor: crosshair;
+            pointer-events: auto;
+        }
+
+        #unicornCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -639,21 +651,23 @@
         }
 
         function getPos(e) {
-            const rect = paintCanvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
+                x: e.offsetX,
+                y: e.offsetY
             };
         }
 
         function startDrawing(e) {
             if (!paintMode) return;
+            e.preventDefault();
             isDrawing = true;
             const pos = getPos(e);
             lastX = pos.x;
             lastY = pos.y;
+            paintCtx.beginPath();
+            paintCtx.arc(lastX, lastY, 8, 0, Math.PI * 2);
+            paintCtx.fillStyle = paintColor;
+            paintCtx.fill();
         }
 
         function draw(e) {
@@ -665,7 +679,7 @@
             paintCtx.moveTo(lastX, lastY);
             paintCtx.lineTo(pos.x, pos.y);
             paintCtx.strokeStyle = paintColor;
-            paintCtx.lineWidth = 15;
+            paintCtx.lineWidth = 20;
             paintCtx.lineCap = 'round';
             paintCtx.lineJoin = 'round';
             paintCtx.stroke();
@@ -697,7 +711,6 @@ function togglePaintMode() {
                 document.getElementById('unicornCanvas').style.opacity = '1';
             }
         }
-        }
 
         function selectPaintColor(e) {
             if (e.target.classList.contains('paint-btn')) {
@@ -711,13 +724,11 @@ function togglePaintMode() {
             paintCtx.clearRect(0, 0, paintCanvas.width, paintCanvas.height);
         }
 
-        paintCanvas.addEventListener('mousedown', startDrawing);
-        paintCanvas.addEventListener('mousemove', draw);
-        paintCanvas.addEventListener('mouseup', stopDrawing);
-        paintCanvas.addEventListener('mouseout', stopDrawing);
-        paintCanvas.addEventListener('touchstart', startDrawing, { passive: false });
-        paintCanvas.addEventListener('touchmove', draw, { passive: false });
-        paintCanvas.addEventListener('touchend', stopDrawing);
+        paintCanvas.addEventListener('pointerdown', startDrawing);
+        paintCanvas.addEventListener('pointermove', draw);
+        paintCanvas.addEventListener('pointerup', stopDrawing);
+        paintCanvas.addEventListener('pointercancel', stopDrawing);
+        paintCanvas.addEventListener('pointerleave', stopDrawing);
         
         modeBtn.addEventListener('click', togglePaintMode);
         paintPalette.addEventListener('click', selectPaintColor);
