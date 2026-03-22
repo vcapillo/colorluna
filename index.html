@@ -16,21 +16,11 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         :root {
             --pink: #FFE4EC;
             --lavender: #E8D5FF;
-            --gold: #FFD700;
-            --gold-light: #FFF3B0;
-            --red: #FF6B6B;
-            --orange: #FFB347;
-            --yellow: #FFE66D;
-            --green: #4ECDC4;
-            --blue: #4A90D9;
-            --indigo: #6B5B95;
-            --violet: #D4A5FF;
         }
 
         html, body {
@@ -39,198 +29,46 @@
             overflow: hidden;
             font-family: 'Fredoka', sans-serif;
             background: linear-gradient(180deg, var(--pink) 0%, var(--lavender) 100%);
-            user-select: none;
-            -webkit-user-select: none;
+            touch-action: manipulation;
         }
 
-        #gameContainer {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #unicornCanvas {
+        #paintCanvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
-            pointer-events: none;
+            touch-action: none;
         }
 
-        .rainbow-buttons {
+        .color-palette {
             position: absolute;
             bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            gap: 8px;
-            z-index: 10;
-            padding: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 95%;
-        }
-
-        .color-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.6);
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15), inset 0 -2px 4px rgba(0,0,0,0.1);
-        }
-
-        .color-btn:active {
-            transform: scale(0.9) translateY(2px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-        }
-
-        .color-btn.red { background: var(--red); }
-        .color-btn.orange { background: var(--orange); }
-        .color-btn.yellow { background: var(--yellow); }
-        .color-btn.green { background: var(--green); }
-        .color-btn.blue { background: var(--blue); }
-        .color-btn.indigo { background: var(--indigo); }
-        .color-btn.violet { background: var(--violet); }
-
-        .restart-btn {
-            position: absolute;
-            bottom: 100px;
-            padding: 15px 40px;
-            font-family: 'Fredoka', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: white;
-            background: linear-gradient(135deg, #FF6B9D 0%, #C44D9A 100%);
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            z-index: 20;
-            box-shadow: 0 6px 20px rgba(196, 77, 154, 0.4);
-            animation: pulse-glow 2s ease-in-out infinite;
-            display: none;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 6px 20px rgba(196, 77, 154, 0.4); }
-            50% { box-shadow: 0 6px 30px rgba(255, 107, 157, 0.7); }
-        }
-
-        .sparkle-text {
-            position: absolute;
-            font-size: 28px;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            pointer-events: none;
-            z-index: 15;
-            animation: float-up 1.5s ease-out forwards;
-        }
-
-        @keyframes float-up {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-80px) scale(1.5); }
-        }
-
-        .background-stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .bg-star {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: var(--gold-light);
-            border-radius: 50%;
-            animation: twinkle 2s ease-in-out infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.3); }
-        }
-
-        .title {
-            position: absolute;
-            top: 20px;
-            font-size: clamp(24px, 6vw, 36px);
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 3px 6px rgba(0,0,0,0.2);
-            z-index: 5;
-            animation: title-bounce 3s ease-in-out infinite;
-        }
-
-        @keyframes title-bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        .mode-btn {
-            position: absolute;
-            top: 80px;
-            right: 20px;
-            padding: 12px 24px;
-            font-family: 'Fredoka', sans-serif;
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            background: linear-gradient(135deg, #6B5B95 0%, #D4A5FF 100%);
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            z-index: 20;
-            box-shadow: 0 4px 15px rgba(107, 91, 149, 0.4);
-        }
-
-        .paint-palette {
-            position: absolute;
-            bottom: 20px;
-            display: none;
-            gap: 15px;
-            z-index: 50;
-            padding: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 100%;
-            background: rgba(255,255,255,0.5);
+            gap: 12px;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.4);
             border-radius: 30px;
-            pointer-events: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .paint-palette.show {
-            display: flex;
+            z-index: 10;
         }
 
         .color-swatch {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.7);
+            border: 3px solid rgba(255,255,255,0.8);
             box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-            -webkit-tap-highlight-color: transparent;
-            cursor: pointer;
         }
 
         .color-swatch.active {
-            border: 5px solid #FFD700;
-            transform: scale(1.2);
-            box-shadow: 0 0 15px #FFD700;
+            border: 4px solid #FFD700;
+            transform: scale(1.15);
         }
 
-        .clear-btn {
+        .btn-clear {
             position: absolute;
             bottom: 20px;
             right: 20px;
@@ -241,12 +79,10 @@
             background: #FF6B6B;
             border: none;
             border-radius: 25px;
-            cursor: pointer;
-            z-index: 50;
-            -webkit-tap-highlight-color: transparent;
+            z-index: 10;
         }
 
-        .music-btn {
+        .btn-music {
             position: absolute;
             bottom: 20px;
             left: 20px;
@@ -257,618 +93,200 @@
             background: linear-gradient(135deg, #6B5B95 0%, #D4A5FF 100%);
             border: none;
             border-radius: 25px;
-            cursor: pointer;
-            z-index: 50;
-            -webkit-tap-highlight-color: transparent;
+            z-index: 10;
         }
 
-        .music-btn.playing {
+        .btn-music.playing {
             background: linear-gradient(135deg, #FF6B9D 0%, #C44D9A 100%);
-            animation: pulse-music 1s ease-in-out infinite;
+            animation: pulse 1s infinite;
         }
 
-        @keyframes pulse-music {
+        @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
-        }
-
-        .clear-btn.show {
-            display: block;
-        }
-
-        .paint-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 30;
-            touch-action: none;
-            cursor: crosshair;
-            pointer-events: auto;
-        }
-
-        #unicornCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <div id="gameContainer">
-        <canvas id="unicornCanvas"></canvas>
-        <div class="background-stars" id="bgStars"></div>
-        <div class="title">✨ Luna Unicorn Magic ✨</div>
-        <div class="rainbow-buttons" id="rainbowButtons">
-            <button class="color-btn red" data-color="#FF6B6B" data-note="C"></button>
-            <button class="color-btn orange" data-color="#FFB347" data-note="D"></button>
-            <button class="color-btn yellow" data-color="#FFE66D" data-note="E"></button>
-            <button class="color-btn green" data-color="#4ECDC4" data-note="F"></button>
-            <button class="color-btn blue" data-color="#4A90D9" data-note="G"></button>
-            <button class="color-btn indigo" data-color="#6B5B95" data-note="A"></button>
-            <button class="color-btn violet" data-color="#D4A5FF" data-note="B"></button>
-        </div>
-        <button class="restart-btn" id="restartBtn">¡Otra vez! 🎉</button>
-        <button class="clear-btn" id="clearBtn">🗑️ Limpiar</button>
-        <button class="music-btn" id="musicBtn">🎵 Música</button>
-        <div class="paint-palette" id="paintPalette">
-            <div class="color-swatch active" data-color="#FF6B6B" style="background:#FF6B6B"></div>
-            <div class="color-swatch" data-color="#FFB347" style="background:#FFB347"></div>
-            <div class="color-swatch" data-color="#FFE66D" style="background:#FFE66D"></div>
-            <div class="color-swatch" data-color="#4ECDC4" style="background:#4ECDC4"></div>
-            <div class="color-swatch" data-color="#4A90D9" style="background:#4A90D9"></div>
-            <div class="color-swatch" data-color="#FF69B4" style="background:#FF69B4"></div>
-            <div class="color-swatch" data-color="#D4A5FF" style="background:#D4A5FF"></div>
-            <div class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF"></div>
-        </div>
-        <canvas id="paintCanvas" class="paint-canvas"></canvas>
+    <canvas id="paintCanvas"></canvas>
+    
+    <div class="color-palette">
+        <div class="color-swatch active" data-color="#FF6B6B" style="background:#FF6B6B"></div>
+        <div class="color-swatch" data-color="#FFB347" style="background:#FFB347"></div>
+        <div class="color-swatch" data-color="#FFE66D" style="background:#FFE66D"></div>
+        <div class="color-swatch" data-color="#4ECDC4" style="background:#4ECDC4"></div>
+        <div class="color-swatch" data-color="#4A90D9" style="background:#4A90D9"></div>
+        <div class="color-swatch" data-color="#FF69B4" style="background:#FF69B4"></div>
+        <div class="color-swatch" data-color="#D4A5FF" style="background:#D4A5FF"></div>
+        <div class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF"></div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('unicornCanvas');
-        const ctx = canvas.getContext('2d');
-        const restartBtn = document.getElementById('restartBtn');
-        const rainbowButtons = document.getElementById('rainbowButtons');
-        const bgStars = document.getElementById('bgStars');
+    <button class="btn-music" id="musicBtn">🎵 Música</button>
+    <button class="btn-clear" id="clearBtn">🗑️ Limpiar</button>
 
-        let unicornColor = '#FFFFFF';
-        let glowColor = '#FFD700';
-        let unicornY = 0;
-        let bouncePhase = 0;
-        let sparkles = [];
-        let particles = [];
-        let audioCtx = null;
-        let musicStarted = false;
-        let paintColor = '#FF6B6B';
+    <script>
+        const canvas = document.getElementById('paintCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let currentColor = '#FF6B6B';
         let isDrawing = false;
         let lastX = 0;
         let lastY = 0;
-
-        const paintCanvas = document.getElementById('paintCanvas');
-        const paintCtx = paintCanvas.getContext('2d');
-        const clearBtn = document.getElementById('clearBtn');
-
-        const colors = ['#FF6B6B', '#FFB347', '#FFE66D', '#4ECDC4', '#4A90D9', '#6B5B95', '#D4A5FF'];
-        const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88];
-
-        const paintColors = ['#FF6B6B', '#FFB347', '#FFE66D', '#4ECDC4', '#4A90D9', '#FF69B4', '#D4A5FF', '#FFFFFF'];
+        let audioCtx = null;
+        let musicInterval = null;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
 
-        function createBackgroundStars() {
-            for (let i = 0; i < 30; i++) {
-                const star = document.createElement('div');
-                star.className = 'bg-star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 60 + '%';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.width = (Math.random() * 6 + 4) + 'px';
-                star.style.height = star.style.width;
-                bgStars.appendChild(star);
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            if (e.touches) {
+                return {
+                    x: e.touches[0].clientX - rect.left,
+                    y: e.touches[0].clientY - rect.top
+                };
             }
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const pos = getPos(e);
+            lastX = pos.x;
+            lastY = pos.y;
+            ctx.beginPath();
+            ctx.arc(lastX, lastY, 12, 0, Math.PI * 2);
+            ctx.fillStyle = currentColor;
+            ctx.fill();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const pos = getPos(e);
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = 25;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function selectColor(e) {
+            if (e.target.classList.contains('color-swatch')) {
+                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+                e.target.classList.add('active');
+                currentColor = e.target.dataset.color;
+                playClickSound();
+            }
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            playClearSound();
         }
 
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
-        }
-
-        function playMagicSound(freq) {
-            if (!audioCtx) return;
-            
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(freq * 1.5, audioCtx.currentTime + 0.1);
-            
-            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-            
-            oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.5);
-
-            const osc2 = audioCtx.createOscillator();
-            const gain2 = audioCtx.createGain();
-            osc2.connect(gain2);
-            gain2.connect(audioCtx.destination);
-            osc2.type = 'triangle';
-            osc2.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
-            osc2.frequency.exponentialRampToValueAtTime(freq * 3, audioCtx.currentTime + 0.2);
-            gain2.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            osc2.start(audioCtx.currentTime);
-            osc2.stop(audioCtx.currentTime + 0.3);
-        }
-
-        let musicInterval = null;
-        
-        function startMusic() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
-            
-            const melody = [392, 440, 494, 523, 587, 659, 784, 659, 587, 523, 494, 440, 392, 440, 494, 523];
-            let noteIndex = 0;
-            
-            musicInterval = setInterval(() => {
-                const freq = melody[noteIndex];
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
-                
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.8);
-                
-                const osc2 = audioCtx.createOscillator();
-                const gain2 = audioCtx.createGain();
-                osc2.connect(gain2);
-                gain2.connect(audioCtx.destination);
-                osc2.type = 'triangle';
-                osc2.frequency.setValueAtTime(freq * 1.5, audioCtx.currentTime);
-                gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                osc2.start(audioCtx.currentTime);
-                osc2.stop(audioCtx.currentTime + 0.5);
-                
-                noteIndex = (noteIndex + 1) % melody.length;
-            }, 500);
         }
 
-        function stopMusic() {
-            if (musicInterval) {
-                clearInterval(musicInterval);
-                musicInterval = null;
-            }
+        function playClickSound() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
         }
 
-        function toggleMusic() {
-            const musicBtn = document.getElementById('musicBtn');
-            if (musicInterval) {
-                stopMusic();
-                musicBtn.textContent = '🎵 Música';
-                musicBtn.classList.remove('playing');
-            } else {
-                initAudio();
-                startMusic();
-                musicBtn.textContent = '⏸️ Música';
-                musicBtn.classList.add('playing');
-            }
-        }
-
-        function drawUnicorn(x, y, color, glow) {
-            ctx.save();
-            ctx.translate(x, y);
-
-            ctx.shadowColor = glow;
-            ctx.shadowBlur = 30;
-
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.ellipse(0, 20, 50, 40, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.ellipse(0, -30, 35, 30, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.moveTo(-25, 0);
-            ctx.quadraticCurveTo(-40, -10, -30, -40);
-            ctx.quadraticCurveTo(-20, -30, -25, 0);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.moveTo(25, 0);
-            ctx.quadraticCurveTo(40, -10, 30, -40);
-            ctx.quadraticCurveTo(20, -30, 25, 0);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.moveTo(-15, -55);
-            ctx.quadraticCurveTo(-20, -90, -10, -100);
-            ctx.quadraticCurveTo(0, -80, 0, -55);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.moveTo(0, -55);
-            ctx.quadraticCurveTo(5, -85, 15, -95);
-            ctx.quadraticCurveTo(20, -80, 15, -55);
-            ctx.fill();
-
-            const hornGradient = ctx.createLinearGradient(0, -100, 0, -50);
-            hornGradient.addColorStop(0, '#FFD700');
-            hornGradient.addColorStop(1, '#FFA500');
-            ctx.fillStyle = hornGradient;
-            ctx.beginPath();
-            ctx.moveTo(-8, -55);
-            ctx.lineTo(0, -100);
-            ctx.lineTo(8, -55);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.fillStyle = '#FFD700';
-            ctx.beginPath();
-            ctx.arc(0, -100, 5, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = '#2D2D2D';
-            ctx.beginPath();
-            ctx.ellipse(-12, -35, 6, 8, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(12, -35, 6, 8, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = 'white';
-            ctx.beginPath();
-            ctx.arc(-10, -37, 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(14, -37, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = '#FFB6D9';
-            ctx.beginPath();
-            ctx.ellipse(0, -20, 8, 5, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            const maneColors = ['#FF6B9D', '#FFB6D9', '#D4A5FF', '#87CEEB', '#98FB98', '#FFD700'];
-            for (let i = 0; i < 6; i++) {
-                ctx.fillStyle = maneColors[i];
-                ctx.beginPath();
-                ctx.ellipse(-20 + i * 8, -45 + Math.sin(i) * 10, 8, 12, Math.sin(i) * 0.5, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.moveTo(-20, 45);
-            ctx.lineTo(-15, 80);
-            ctx.lineTo(-5, 70);
-            ctx.lineTo(0, 90);
-            ctx.lineTo(5, 70);
-            ctx.lineTo(15, 80);
-            ctx.lineTo(20, 45);
-            ctx.closePath();
-            ctx.fill();
-
-            for (let i = -2; i <= 2; i++) {
-                ctx.fillStyle = '#8B4513';
-                ctx.beginPath();
-                ctx.ellipse(i * 8 + 40, 85, 6, 8, 0.2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#654321';
-                ctx.beginPath();
-                ctx.ellipse(i * 8 + 40, 83, 4, 3, 0.2, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            ctx.restore();
-        }
-
-        function createSparkle(x, y, color) {
-            for (let i = 0; i < 15; i++) {
-                sparkles.push({
-                    x: x,
-                    y: y,
-                    vx: (Math.random() - 0.5) * 8,
-                    vy: (Math.random() - 0.5) * 8 - 3,
-                    size: Math.random() * 8 + 4,
-                    color: color || '#FFD700',
-                    life: 1,
-                    rotation: Math.random() * Math.PI * 2,
-                    rotationSpeed: (Math.random() - 0.5) * 0.3
-                });
-            }
-        }
-
-        function updateSparkles() {
-            for (let i = sparkles.length - 1; i >= 0; i--) {
-                const s = sparkles[i];
-                s.x += s.vx;
-                s.y += s.vy;
-                s.vy += 0.1;
-                s.life -= 0.02;
-                s.rotation += s.rotationSpeed;
-                if (s.life <= 0) {
-                    sparkles.splice(i, 1);
-                }
-            }
-        }
-
-        function drawSparkles() {
-            sparkles.forEach(s => {
-                ctx.save();
-                ctx.translate(s.x, s.y);
-                ctx.rotate(s.rotation);
-                ctx.globalAlpha = s.life;
-                ctx.fillStyle = s.color;
-                
-                ctx.beginPath();
-                ctx.moveTo(0, -s.size);
-                ctx.lineTo(s.size * 0.3, 0);
-                ctx.lineTo(0, s.size);
-                ctx.lineTo(-s.size * 0.3, 0);
-                ctx.closePath();
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.moveTo(-s.size, 0);
-                ctx.lineTo(0, s.size * 0.3);
-                ctx.lineTo(s.size, 0);
-                ctx.lineTo(0, -s.size * 0.3);
-                ctx.closePath();
-                ctx.fill();
-                
-                ctx.restore();
+        function playClearSound() {
+            initAudio();
+            const notes = [523, 659, 784];
+            notes.forEach((freq, i) => {
+                setTimeout(() => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.4);
+                }, i * 100);
             });
         }
 
-        function showColorName(color, x, y) {
-            const colorNames = {
-                '#FF6B6B': 'ROJO 🐷',
-                '#FFB347': 'NARANJA 🦊',
-                '#FFE66D': 'AMARILLO ☀️',
-                '#GREEN': 'VERDE 🐸',
-                '#4A90D9': 'AZUL 🌊',
-                '#6B5B95': 'ÍNDIGO 👑',
-                '#D4A5FF': 'VIOLETA 🦄'
-            };
-            
-            const name = colorNames[color] || '✨';
-            const text = document.createElement('div');
-            text.className = 'sparkle-text';
-            text.textContent = name;
-            text.style.left = x + 'px';
-            text.style.top = y + 'px';
-            document.getElementById('gameContainer').appendChild(text);
-            
-            setTimeout(() => text.remove(), 1500);
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            bouncePhase += 0.05;
-            unicornY = Math.sin(bouncePhase) * 15;
-            
-            const unicornX = canvas.width / 2;
-            const unicornTop = canvas.height / 2 - 100 + unicornY;
-            
-            const gradient = ctx.createRadialGradient(unicornX, unicornTop, 0, unicornX, unicornTop, 100);
-            gradient.addColorStop(0, glowColor + '40');
-            gradient.addColorStop(1, 'transparent');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(unicornX - 100, unicornTop - 100, 200, 200);
-            
-            drawUnicorn(unicornX, unicornTop + unicornY, unicornColor, glowColor);
-            
-            updateSparkles();
-            drawSparkles();
-            
-            requestAnimationFrame(animate);
-        }
-
-        function handleColorClick(e) {
-            initAudio();
-            
-            const btn = e.target;
-            const color = btn.dataset.color;
-            const note = btn.dataset.note;
-            const noteIndex = ['C', 'D', 'E', 'F', 'G', 'A', 'B'].indexOf(note);
-            
-            unicornColor = color;
-            glowColor = color;
-            
-            playMagicSound(notes[noteIndex]);
-            
-            const unicornX = canvas.width / 2;
-            const unicornTop = canvas.height / 2 - 100;
-            createSparkle(unicornX, unicornTop, color);
-            
-            showColorName(color, canvas.width / 2 - 50, canvas.height / 2 - 150);
-            
-            restartBtn.style.display = 'block';
-        }
-
-        function handleRestart() {
-            unicornColor = '#FFFFFF';
-            glowColor = '#FFD700';
-            sparkles = [];
-            restartBtn.style.display = 'none';
-            playMagicSound(523.25);
-        }
-
-        rainbowButtons.addEventListener('click', handleColorClick);
-        rainbowButtons.addEventListener('touchstart', handleColorClick, { passive: true });
-        restartBtn.addEventListener('click', handleRestart);
-
-        window.addEventListener('resize', resizeCanvas);
-        
-        resizeCanvas();
-        createBackgroundStars();
-        animate();
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
-        }
-
-        function resizePaintCanvas() {
-            paintCanvas.width = window.innerWidth;
-            paintCanvas.height = window.innerHeight;
-        }
-
-        function getPos(e) {
-            const rect = paintCanvas.getBoundingClientRect();
-            const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-            const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-            return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
-            };
-        }
-
-        function startDrawing(e) {
-            if (!paintMode) return;
-            e.preventDefault();
-            e.stopPropagation();
-            isDrawing = true;
-            const pos = getPos(e);
-            lastX = pos.x;
-            lastY = pos.y;
-            paintCtx.beginPath();
-            paintCtx.arc(lastX, lastY, 10, 0, Math.PI * 2);
-            paintCtx.fillStyle = paintColor;
-            paintCtx.fill();
-        }
-
-        function clearPaint() {
-            paintCtx.clearRect(0, 0, paintCanvas.width, paintCanvas.height);
-            unicornColor = '#FFFFFF';
-            glowColor = '#FFD700';
-            sparkles = [];
-            restartBtn.style.display = 'none';
-        }
-
-        function handleTouchStart(e) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            const rect = paintCanvas.getBoundingClientRect();
-            lastX = touch.clientX - rect.left;
-            lastY = touch.clientY - rect.top;
-            isDrawing = true;
-            paintCtx.beginPath();
-            paintCtx.arc(lastX, lastY, 12, 0, Math.PI * 2);
-            paintCtx.fillStyle = paintColor;
-            paintCtx.fill();
-        }
-
-        function handleTouchMove(e) {
-            if (!isDrawing) return;
-            e.preventDefault();
-            const touch = e.touches[0];
-            const rect = paintCanvas.getBoundingClientRect();
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            paintCtx.beginPath();
-            paintCtx.moveTo(lastX, lastY);
-            paintCtx.lineTo(x, y);
-            paintCtx.strokeStyle = paintColor;
-            paintCtx.lineWidth = 25;
-            paintCtx.lineCap = 'round';
-            paintCtx.lineJoin = 'round';
-            paintCtx.stroke();
-            lastX = x;
-            lastY = y;
-        }
-
-        function handleTouchEnd() {
-            isDrawing = false;
-        }
-
-        function handleColorTouch(e) {
-            const target = e.target;
-            if (target.classList.contains('color-swatch')) {
-                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-                target.classList.add('active');
-                paintColor = target.dataset.color;
+        function toggleMusic() {
+            const btn = document.getElementById('musicBtn');
+            if (musicInterval) {
+                clearInterval(musicInterval);
+                musicInterval = null;
+                btn.textContent = '🎵 Música';
+                btn.classList.remove('playing');
+            } else {
+                initAudio();
+                const melody = [392, 440, 494, 523, 587, 659, 784, 659, 587, 523, 494, 440];
+                let i = 0;
+                musicInterval = setInterval(() => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.setValueAtTime(melody[i], audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.6);
+                    i = (i + 1) % melody.length;
+                }, 500);
+                btn.textContent = '⏸️ Música';
+                btn.classList.add('playing');
             }
         }
 
-        paintCanvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-        paintCanvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-        paintCanvas.addEventListener('touchend', handleTouchEnd);
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing);
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseleave', stopDrawing);
+
+        document.querySelector('.color-palette').addEventListener('click', selectColor);
+        document.querySelector('.color-palette').addEventListener('touchstart', selectColor, { passive: true });
         
-        paintCanvas.addEventListener('mousedown', function(e) {
-            const rect = paintCanvas.getBoundingClientRect();
-            lastX = e.clientX - rect.left;
-            lastY = e.clientY - rect.top;
-            isDrawing = true;
-            paintCtx.beginPath();
-            paintCtx.arc(lastX, lastY, 12, 0, Math.PI * 2);
-            paintCtx.fillStyle = paintColor;
-            paintCtx.fill();
-        });
-
-        paintCanvas.addEventListener('mousemove', function(e) {
-            if (!isDrawing) return;
-            const rect = paintCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            paintCtx.beginPath();
-            paintCtx.moveTo(lastX, lastY);
-            paintCtx.lineTo(x, y);
-            paintCtx.strokeStyle = paintColor;
-            paintCtx.lineWidth = 25;
-            paintCtx.lineCap = 'round';
-            paintCtx.lineJoin = 'round';
-            paintCtx.stroke();
-            lastX = x;
-            lastY = y;
-        });
-
-        paintCanvas.addEventListener('mouseup', function() { isDrawing = false; });
-        paintCanvas.addEventListener('mouseleave', function() { isDrawing = false; });
-
-        paintPalette.addEventListener('touchstart', handleColorTouch, { passive: true });
-        paintPalette.addEventListener('click', handleColorTouch);
-        clearBtn.addEventListener('click', clearPaint);
-        clearBtn.addEventListener('touchstart', clearPaint, { passive: true });
+        document.getElementById('clearBtn').addEventListener('click', clearCanvas);
+        document.getElementById('clearBtn').addEventListener('touchstart', clearCanvas, { passive: true });
+        
         document.getElementById('musicBtn').addEventListener('click', toggleMusic);
         document.getElementById('musicBtn').addEventListener('touchstart', toggleMusic, { passive: true });
 
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            resizePaintCanvas();
-        });
-        
-        resizePaintCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
     </script>
 </body>
 </html>
