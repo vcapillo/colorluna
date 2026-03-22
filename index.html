@@ -214,21 +214,20 @@
             display: flex;
         }
 
-        .paint-btn {
-            width: 55px;
-            height: 55px;
+        .color-swatch {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            border: 5px solid rgba(255,255,255,0.8);
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 4px solid rgba(255,255,255,0.7);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
             -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
+            cursor: pointer;
         }
 
-        .paint-btn.active {
+        .color-swatch.active {
             border: 5px solid #FFD700;
-            transform: scale(1.15);
-            box-shadow: 0 0 20px #FFD700;
+            transform: scale(1.2);
+            box-shadow: 0 0 15px #FFD700;
         }
 
         .clear-btn {
@@ -298,18 +297,16 @@
         </div>
         <button class="restart-btn" id="restartBtn">¡Otra vez! 🎉</button>
         <button class="mode-btn" id="modeBtn">🎨 Pintar</button>
-        <button class="clear-btn" id="clearBtn">🗑️ Borrar</button>
+        <button class="clear-btn" id="clearBtn">🗑️ Limpiar</button>
         <div class="paint-palette" id="paintPalette">
-            <button class="paint-btn active" data-color="#FF6B6B" style="background:#FF6B6B"></button>
-            <button class="paint-btn" data-color="#FFB347" style="background:#FFB347"></button>
-            <button class="paint-btn" data-color="#FFE66D" style="background:#FFE66D"></button>
-            <button class="paint-btn" data-color="#4ECDC4" style="background:#4ECDC4"></button>
-            <button class="paint-btn" data-color="#4A90D9" style="background:#4A90D9"></button>
-            <button class="paint-btn" data-color="#6B5B95" style="background:#6B5B95"></button>
-            <button class="paint-btn" data-color="#D4A5FF" style="background:#D4A5FF"></button>
-            <button class="paint-btn" data-color="#FFFFFF" style="background:#FFFFFF"></button>
-            <button class="paint-btn" data-color="#FF69B4" style="background:#FF69B4"></button>
-            <button class="paint-btn" data-color="#00CED1" style="background:#00CED1"></button>
+            <div class="color-swatch active" data-color="#FF6B6B" style="background:#FF6B6B"></div>
+            <div class="color-swatch" data-color="#FFB347" style="background:#FFB347"></div>
+            <div class="color-swatch" data-color="#FFE66D" style="background:#FFE66D"></div>
+            <div class="color-swatch" data-color="#4ECDC4" style="background:#4ECDC4"></div>
+            <div class="color-swatch" data-color="#4A90D9" style="background:#4A90D9"></div>
+            <div class="color-swatch" data-color="#FF69B4" style="background:#FF69B4"></div>
+            <div class="color-swatch" data-color="#D4A5FF" style="background:#D4A5FF"></div>
+            <div class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF"></div>
         </div>
         <canvas id="paintCanvas" class="paint-canvas"></canvas>
     </div>
@@ -733,11 +730,11 @@
         }
 
         function selectPaintColor(e) {
-            const btn = e.target.closest('.paint-btn');
-            if (btn) {
-                document.querySelectorAll('.paint-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                paintColor = btn.dataset.color;
+            const swatch = e.target.closest('.color-swatch') || e.target;
+            if (swatch.classList.contains('color-swatch')) {
+                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+                swatch.classList.add('active');
+                paintColor = swatch.dataset.color;
             }
         }
 
